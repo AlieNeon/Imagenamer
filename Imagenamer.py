@@ -21,18 +21,11 @@ def ocr(filename):
 
 def namecleaner(filename):
     print("filenameis "+filename)
-<<<<<<< HEAD
     filename = "_".join(filename.split()) # Get rig of line braks and spaces
     filename = filename.replace("__","_") # Cleaning duplicated '_'s
     filename = filename.replace(" ","") # Get rig of spaces(For recursion)
     filename = filename.replace("\n","") # Get rig of line braks(For recursion)
     #Get rid of forbiden characters
-=======
-    filename = "_".join(filename.split())
-    filename = filename.replace("__","_")
-    filename = filename.replace(" ","")
-    filename = filename.replace("\n","")
->>>>>>> 1ab02cad0d56cf6bd1aa7748ddb11ff8220f9919
     filename = filename.replace("<","")
     filename = filename.replace(">","")
     filename = filename.replace(":","")
