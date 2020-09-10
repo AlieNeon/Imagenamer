@@ -1,3 +1,6 @@
+"""This Program is used to rename image files with its content"""
+
+"""SETUP"""
 try:
     from PIL import Image
 except ImportError:
@@ -9,17 +12,20 @@ import string
 namearray = []
 indexnow = 0
 
-pytesseract.tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract'
+pytesseract.tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract' #absolute path to out tesseract instalation
 
+"""FUNCTIONS"""
 def ocr(filename):
-    newname = pytesseract.image_to_string(Image.open(absolutebasepathin+"\\"+filename))  # We'll use Pillow's Image class to open the image and pytesseract to detect the string in the image
+    newname = pytesseract.image_to_string(Image.open(absolutebasepathin+"\\"+filename))  # Use pillow to open an image for pytesseract image2string to use
     return newname
 
 def namecleaner(filename):
     print("filenameis "+filename)
-    filename = "_".join(filename.split())
-    filename = filename.replace(" ","")
-    filename = filename.replace("\n","")
+    filename = "_".join(filename.split()) # Get rig of line braks and spaces
+    filename = filename.replace("__","_") # Cleaning duplicated '_'s
+    filename = filename.replace(" ","") # Get rig of spaces(For recursion)
+    filename = filename.replace("\n","") # Get rig of line braks(For recursion)
+    #Get rid of forbiden characters
     filename = filename.replace("<","")
     filename = filename.replace(">","")
     filename = filename.replace(":","")
@@ -29,33 +35,44 @@ def namecleaner(filename):
     filename = filename.replace("|","")
     filename = filename.replace("?","")
     filename = filename.replace("*","")
-    filename = filename.replace(".","")
-    outputname = filename+basename[len(basename)-4:len(basename)]
+    ##################################
+    filename = filename.replace(".","") # Get rid of extra dots
+    outputname = filename+basename[len(basename)-4:len(basename)] # Get the extension of the file
     print("outputnameis "+outputname)
     return outputname
 
-# List all files in a directory using scandir()
+"""CORECODE"""
+# Define the input and output directories
 basepathin = '.\ImagesToConvert'
 print("basepathin = "+basepathin)
-absolutebasepathin = os.path.abspath('.\ImagesToConvert')
-print("absolutebasepathin = "+absolutebasepathin)
 basepathout = '.\ImageOutput'
 print("basepathout = "+basepathout)
+
+# Getting the absolute path to the before named directories
+absolutebasepathin = os.path.abspath('.\ImagesToConvert')
+print("absolutebasepathin = "+absolutebasepathin)
 absolutebasepathout = os.path.abspath('.\ImagesOutput')
 print("absolutebasepathout = "+absolutebasepathout)
+
+# List all files in a directory using scandir()
 with os.scandir(basepathin) as entries:
     for entry in entries:
         if entry.is_file():
+            # Fill an array with the list
             namearray.append(entry.name)
 
+# Get array length for the loop
 arraylength = len(namearray)
 print("arraylength = "+str(arraylength))
 
 while indexnow < arraylength:
+    # Get file name from the array
     basename = namearray[indexnow]
     print("basename = "+basename)
+    # Call ocr
     newname = ocr(basename)
     print("newname = "+newname)
+    # Call "namecleaner" to get rid of forbiden characters, line breaks and spaces.
     cleanname = namecleaner(newname)
     print("cleanname = "+cleanname)
     os.rename(absolutebasepathin+"\\"+basename, absolutebasepathout+"\\"+cleanname)
