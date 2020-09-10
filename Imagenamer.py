@@ -18,6 +18,7 @@ def ocr(filename):
 def namecleaner(filename):
     print("filenameis "+filename)
     filename = "_".join(filename.split())
+    filename = filename.replace("__","_")
     filename = filename.replace(" ","")
     filename = filename.replace("\n","")
     filename = filename.replace("<","")
