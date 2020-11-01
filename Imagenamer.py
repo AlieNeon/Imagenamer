@@ -76,6 +76,8 @@ while indexnow < arraylength:
     cleanname = namecleaner(newname)
     print("cleanname = "+cleanname)
     if cleanname != "":
+        if len(cleanname) > 250:
+            cleanname = cleanname[0:250]
         cleanname = cleanname + basename[len(basename)-4:len(basename)]
         os.rename(absolutebasepathin+"\\"+basename, absolutebasepathout+"\\"+cleanname)
         print(basename+" is now renamed as "+cleanname)
