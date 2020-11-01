@@ -8,6 +8,7 @@ except ImportError:
 import pytesseract
 import os
 import string
+import uuid
 
 namearray = []
 indexnow = 0
@@ -36,8 +37,7 @@ def namecleaner(filename):
     filename = filename.replace("?","")
     filename = filename.replace("*","")
     ##################################
-    filename = filename.replace(".","") # Get rid of extra dots
-    outputname = filename+basename[len(basename)-4:len(basename)] # Get the extension of the file
+    outputname = filename.replace(".","") # Get rid of extra dots
     print("outputnameis "+outputname)
     return outputname
 
@@ -55,7 +55,7 @@ absolutebasepathout = os.path.abspath('.\ImagesOutput')
 print("absolutebasepathout = "+absolutebasepathout)
 
 # List all files in a directory using scandir()
-with os.scandir(basepathin) as entries:
+with os.scandir(absolutebasepathin) as entries:
     for entry in entries:
         if entry.is_file():
             # Fill an array with the list
@@ -75,9 +75,18 @@ while indexnow < arraylength:
     # Call "namecleaner" to get rid of forbiden characters, line breaks and spaces.
     cleanname = namecleaner(newname)
     print("cleanname = "+cleanname)
-    os.rename(absolutebasepathin+"\\"+basename, absolutebasepathout+"\\"+cleanname)
-    print(basename+" is now renamed as "+cleanname)
-    indexnow = indexnow + 1
+    if cleanname != "":
+        cleanname = cleanname + basename[len(basename)-4:len(basename)]
+        os.rename(absolutebasepathin+"\\"+basename, absolutebasepathout+"\\"+cleanname)
+        print(basename+" is now renamed as "+cleanname)
+    else:
+        UUIDnow = str(uuid.uuid4())
+        cleanname = namecleaner(UUIDnow)
+        cleanname = cleanname + basename[len(basename)-4:len(basename)]
+        os.rename(absolutebasepathin+"\\"+basename, absolutebasepathout+"\\"+cleanname)
+        print(basename+" is now "+cleanname)
+
+    indexnow += 1
 
 
 print("All images are given a name")
